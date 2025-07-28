@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TenantStatus {
+  TRIAL
+  ACTIVE
+  SUSPENDED
+  CANCELLED
+}
+
+enum ModuleEnum {
+  CUSTOM_ROLES
+  ANALYTICS
+  NAVIGATION
+  INVENTORY
+  DELIVERY
+  STATISTICS
+}
+
+model Tenant {
+  tenantId    String  @id @default(uuid())
+  companyName String  @db.VarChar(255)
+  slug        String  @unique @db.VarChar(100)
+  backendUrl  String? @db.Text
+
+  status         TenantStatus @default(TRIAL)
+  trialStartedAt DateTime     @default(now()) @db.Timestamptz
+  trialEndsAt    DateTime?    @db.Timestamptz
+
+  maxUsers Int @default(3)
+
+  enabledModules    EnabledModule[]
+  billingCustomerId String?         @db.VarChar(255)
+
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+}
+
+model Module {
+  name          ModuleEnum      @id
+  description   String?         @db.Text
+  priceCents    Int             @default(0) // price per month (optional, for display/UI)
+  createdAt     DateTime        @default(now()) @db.Timestamptz
+  updatedAt     DateTime        @updatedAt @db.Timestamptz
+  EnabledModule EnabledModule[]
+}
+
+model EnabledModule {
+  id         String     @id @default(uuid())
+  tenant     Tenant     @relation(fields: [tenantId], references: [tenantId], onDelete: Cascade)
+  tenantId   String
+  module     Module     @relation(fields: [moduleName], references: [name], onDelete: Cascade)
+  moduleName ModuleEnum
+
+  enabledAt DateTime @default(now()) @db.Timestamptz
+
+  @@unique([tenantId, moduleName]) // Prevent duplicate activations
+}
