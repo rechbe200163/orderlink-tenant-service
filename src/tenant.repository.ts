@@ -35,7 +35,11 @@ export class TenantRepository {
     const tenant = await this.prismaService.client.tenant.findUnique({
       where: { tenantId },
       include: {
-        enabledModules: true,
+        enabledModules: {
+          select: {
+            moduleName: true,
+          },
+        },
       },
     });
     if (!tenant) {

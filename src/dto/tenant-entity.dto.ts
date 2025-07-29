@@ -57,5 +57,5 @@ export class TenantDto {
 
   @Expose()
   @Type(() => EnabledModuleDto)
-  enabledModules: EnabledModuleDto; // Assuming this is an array of enabled modules
+  enabledModules: EnabledModuleDto[];
 }
