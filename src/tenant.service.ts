@@ -12,9 +12,9 @@ export class TenantService {
     private readonly moduleService: ModuleService
   ) {}
 
-  findOne(tenantId: string): Promise<TenantDto> {
-    const tenant = this.tenantRepository.findById(tenantId);
-    return tenant;
+  async findOne(tenantId: string): Promise<TenantDto> {
+    const tenant = await this.tenantRepository.findById(tenantId);
+    return tenant as TenantDto;
   }
 
   async createTenant(createTenantDto: { companyName: string; slug: string }) {
