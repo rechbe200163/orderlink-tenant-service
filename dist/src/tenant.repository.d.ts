@@ -17,7 +17,5 @@ export declare class TenantRepository {
         createdAt: Date;
         updatedAt: Date;
     }>;
-    findByName(): Promise<void>;
-    findAllRoleNames(): Promise<void>;
     update(): Promise<void>;
 }

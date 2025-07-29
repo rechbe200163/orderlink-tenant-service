@@ -31,8 +31,6 @@ let TenantRepository = class TenantRepository {
             data,
         });
     }
-    async findByName() { }
-    async findAllRoleNames() { }
     async update() { }
 };
 exports.TenantRepository = TenantRepository;

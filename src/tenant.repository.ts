@@ -30,9 +30,5 @@ export class TenantRepository {
     });
   }
 
-  async findByName() {}
-
-  async findAllRoleNames() {}
-
   async update() {}
 }

@@ -17,11 +17,9 @@ enum TenantStatus {
 
 enum ModuleEnum {
   CUSTOM_ROLES
-  ANALYTICS
-  NAVIGATION
-  INVENTORY
-  DELIVERY
   STATISTICS
+  NAVIGATION
+
 }
 
 model Tenant {
