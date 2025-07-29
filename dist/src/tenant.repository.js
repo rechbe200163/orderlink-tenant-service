@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TenantRepository = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_prisma_1 = require("nestjs-prisma");
+const microservices_1 = require("@nestjs/microservices");
 let TenantRepository = class TenantRepository {
     prismaService;
     constructor(prismaService) {
@@ -25,13 +26,36 @@ let TenantRepository = class TenantRepository {
             where: { companyName: data.companyName },
         });
         if (existingTenant) {
-            throw new common_1.BadRequestException(`Tenant with company name ${data.companyName} already exists`);
+            throw new microservices_1.RpcException(`Tenant with company name ${data.companyName} already exists`);
         }
         return this.prismaService.client.tenant.create({
             data,
         });
     }
-    async update() { }
+    async findById(tenantId) {
+        const tenant = await this.prismaService.client.tenant.findUnique({
+            where: { tenantId },
+            select: {
+                tenantId: true,
+                backendUrl: true,
+                status: true,
+                trialStartedAt: true,
+                trialEndsAt: true,
+                maxUsers: true,
+                createdAt: true,
+                updatedAt: true,
+                enabledModules: {
+                    select: {
+                        moduleName: true,
+                    },
+                },
+            },
+        });
+        if (!tenant) {
+            throw new microservices_1.RpcException(`Tenant with ID ${tenantId} not found`);
+        }
+        return tenant;
+    }
 };
 exports.TenantRepository = TenantRepository;
 exports.TenantRepository = TenantRepository = __decorate([

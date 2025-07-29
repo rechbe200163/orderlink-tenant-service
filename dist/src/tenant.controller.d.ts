@@ -18,7 +18,7 @@ export declare class TenantController {
         createdAt: Date;
         updatedAt: Date;
     }>;
-    findAll(): string;
-    findOne(id: string): string;
-    remove(id: string): string;
+    findOne({ tenantId }: {
+        tenantId: string;
+    }): Promise<import("./dto/tenant-entity.dto").TenantDto>;
 }

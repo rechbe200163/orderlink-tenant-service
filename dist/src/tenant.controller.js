@@ -25,14 +25,9 @@ let TenantController = class TenantController {
         console.log('Received create tenant request:', createTenantDto);
         return this.tenantService.createTenant(createTenantDto);
     }
-    findAll() {
-        return this.tenantService.findAll();
-    }
-    findOne(id) {
-        return this.tenantService.findOne(+id);
-    }
-    remove(id) {
-        return this.tenantService.remove(+id);
+    findOne({ tenantId }) {
+        console.log('Received get tenant by ID request:', tenantId);
+        return this.tenantService.findOne(tenantId);
     }
 };
 exports.TenantController = TenantController;
@@ -44,25 +39,12 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TenantController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)(),
+    (0, microservices_1.MessagePattern)('get_tenant_by_id'),
+    __param(0, (0, microservices_1.Payload)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], TenantController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], TenantController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], TenantController.prototype, "remove", null);
 exports.TenantController = TenantController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [tenant_service_1.TenantService])

@@ -34,7 +34,15 @@ export class TenantRepository {
   async findById(tenantId: string) {
     const tenant = await this.prismaService.client.tenant.findUnique({
       where: { tenantId },
-      include: {
+      select: {
+        tenantId: true,
+        backendUrl: true,
+        status: true,
+        trialStartedAt: true,
+        trialEndsAt: true,
+        maxUsers: true,
+        createdAt: true,
+        updatedAt: true,
         enabledModules: {
           select: {
             moduleName: true,

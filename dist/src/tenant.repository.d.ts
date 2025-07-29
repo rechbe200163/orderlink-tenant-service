@@ -17,5 +17,17 @@ export declare class TenantRepository {
         createdAt: Date;
         updatedAt: Date;
     }>;
-    update(): Promise<void>;
+    findById(tenantId: string): Promise<{
+        tenantId: string;
+        backendUrl: string | null;
+        status: import("@prisma/client").$Enums.TenantStatus;
+        trialStartedAt: Date;
+        trialEndsAt: Date;
+        maxUsers: number;
+        createdAt: Date;
+        updatedAt: Date;
+        enabledModules: {
+            moduleName: import("@prisma/client").$Enums.ModuleEnum;
+        }[];
+    }>;
 }

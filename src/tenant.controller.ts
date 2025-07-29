@@ -21,7 +21,8 @@ export class TenantController {
   }
 
   @MessagePattern('get_tenant_by_id')
-  findOne(@Payload() tenantId: string) {
+  findOne(@Payload() { tenantId }: { tenantId: string }) {
+    console.log('Received get tenant by ID request:', tenantId);
     return this.tenantService.findOne(tenantId);
   }
 }

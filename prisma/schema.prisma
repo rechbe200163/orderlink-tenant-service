@@ -20,7 +20,6 @@ enum ModuleEnum {
   CUSTOM_ROLES
   STATISTICS
   NAVIGATION
-
 }
 
 model Tenant {
