@@ -15,9 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TenantService = void 0;
 const common_1 = require("@nestjs/common");
 const payload_decorator_1 = require("@nestjs/microservices/decorators/payload.decorator");
+const tenant_repository_1 = require("./tenant.repository");
 let TenantService = class TenantService {
+    tenantRepository;
+    constructor(tenantRepository) {
+        this.tenantRepository = tenantRepository;
+    }
     create(createTenantDto) {
-        return 'This action adds a new tenant';
+        return this.tenantRepository.create(createTenantDto);
     }
     findAll() {
         return `This action returns all tenant`;
@@ -29,11 +34,8 @@ let TenantService = class TenantService {
         return `This action removes a #${id} tenant`;
     }
     createTenant(createTenantDto) {
-        console.log('Received create_tenant message:', createTenantDto);
-        return {
-            message: 'Tenant created successfully',
-            tenant: createTenantDto,
-        };
+        console.log('Creating tenant with data:', createTenantDto);
+        return this.tenantRepository.create(createTenantDto);
     }
 };
 exports.TenantService = TenantService;
@@ -44,6 +46,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TenantService.prototype, "createTenant", null);
 exports.TenantService = TenantService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [tenant_repository_1.TenantRepository])
 ], TenantService);
 //# sourceMappingURL=tenant.service.js.map

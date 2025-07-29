@@ -10,13 +10,25 @@ exports.TenantModule = void 0;
 const common_1 = require("@nestjs/common");
 const tenant_service_1 = require("./tenant.service");
 const tenant_controller_1 = require("./tenant.controller");
+const tenant_repository_1 = require("./tenant.repository");
+const nestjs_prisma_1 = require("nestjs-prisma");
+const prisma_extension_1 = require("../prisma/prisma.extension");
 let TenantModule = class TenantModule {
 };
 exports.TenantModule = TenantModule;
 exports.TenantModule = TenantModule = __decorate([
     (0, common_1.Module)({
+        imports: [
+            nestjs_prisma_1.CustomPrismaModule.forRootAsync({
+                name: 'PrismaService',
+                useFactory: () => {
+                    return prisma_extension_1.extendedPrismaClient;
+                },
+                isGlobal: true,
+            }),
+        ],
         controllers: [tenant_controller_1.TenantController],
-        providers: [tenant_service_1.TenantService],
+        providers: [tenant_service_1.TenantService, tenant_repository_1.TenantRepository],
     })
 ], TenantModule);
 //# sourceMappingURL=tenant.module.js.map

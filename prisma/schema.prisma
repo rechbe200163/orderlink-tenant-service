@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  binaryTargets = ["native", "debian-openssl-3.0.x", "linux-arm64-openssl-3.0.x"]
 }
 
 datasource db {
@@ -26,8 +26,8 @@ enum ModuleEnum {
 
 model Tenant {
   tenantId    String  @id @default(uuid())
-  companyName String  @db.VarChar(255)
-  slug        String  @unique @db.VarChar(100)
+  companyName String   @unique
+  slug        String  @unique 
   backendUrl  String? @db.Text
 
   status         TenantStatus @default(TRIAL)
@@ -37,10 +37,14 @@ model Tenant {
   maxUsers Int @default(3)
 
   enabledModules    EnabledModule[]
-  billingCustomerId String?         @db.VarChar(255)
+  billingCustomerId String?         
 
   createdAt DateTime @default(now()) @db.Timestamptz
   updatedAt DateTime @updatedAt @db.Timestamptz
+
+  @@index([slug], name: "idx_tenant_slug")
+  @@index([status], name: "idx_tenant_status")
+  @@index([companyName], name: "idx_tenant_company_name")
 }
 
 model Module {

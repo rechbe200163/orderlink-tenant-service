@@ -5,13 +5,19 @@ export declare class TenantController {
     create(createTenantDto: {
         companyName: string;
         slug: string;
-    }): {
-        message: string;
-        tenant: {
-            companyName: string;
-            slug: string;
-        };
-    };
+    }): Promise<{
+        tenantId: string;
+        companyName: string;
+        slug: string;
+        backendUrl: string | null;
+        status: import("@prisma/client").$Enums.TenantStatus;
+        trialStartedAt: Date;
+        trialEndsAt: Date | null;
+        maxUsers: number;
+        billingCustomerId: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
     findAll(): string;
     findOne(id: string): string;
     remove(id: string): string;

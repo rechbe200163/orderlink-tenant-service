@@ -16,6 +16,7 @@ export class TenantController {
 
   @MessagePattern('create_tenant')
   create(@Payload() createTenantDto: { companyName: string; slug: string }) {
+    console.log('Received create tenant request:', createTenantDto);
     return this.tenantService.createTenant(createTenantDto);
   }
 

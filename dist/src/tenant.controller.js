@@ -22,6 +22,7 @@ let TenantController = class TenantController {
         this.tenantService = tenantService;
     }
     create(createTenantDto) {
+        console.log('Received create tenant request:', createTenantDto);
         return this.tenantService.createTenant(createTenantDto);
     }
     findAll() {
