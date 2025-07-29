@@ -20,18 +20,8 @@ export class TenantController {
     return this.tenantService.createTenant(createTenantDto);
   }
 
-  @Get()
-  findAll() {
-    return this.tenantService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tenantService.findOne(+id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tenantService.remove(+id);
+  @MessagePattern('get_tenant_by_id')
+  findOne(@Payload() tenantId: string) {
+    return this.tenantService.findOne(tenantId);
   }
 }

@@ -7,6 +7,7 @@ import {
 import { CustomPrismaService } from 'nestjs-prisma';
 import { ExtendedPrismaClient } from 'prisma/prisma.extension';
 import { CreateTenantDto } from './dto/create-tenant.dto';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class TenantRepository {
@@ -21,7 +22,7 @@ export class TenantRepository {
       where: { companyName: data.companyName },
     });
     if (existingTenant) {
-      throw new BadRequestException(
+      throw new RpcException(
         `Tenant with company name ${data.companyName} already exists`
       );
     }
@@ -30,5 +31,16 @@ export class TenantRepository {
     });
   }
 
-  async update() {}
+  async findById(tenantId: string) {
+    const tenant = await this.prismaService.client.tenant.findUnique({
+      where: { tenantId },
+      include: {
+        enabledModules: true,
+      },
+    });
+    if (!tenant) {
+      throw new RpcException(`Tenant with ID ${tenantId} not found`);
+    }
+    return tenant;
+  }
 }
