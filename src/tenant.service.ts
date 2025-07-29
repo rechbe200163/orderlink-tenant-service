@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Payload } from '@nestjs/microservices/decorators/payload.decorator';
 import { EventPattern, MessagePattern } from '@nestjs/microservices';
 import { TenantRepository } from './tenant.repository';
+import { ModuleService } from './module.service';
 
 @Injectable()
 export class TenantService {
-  constructor(private readonly tenantRepository: TenantRepository) {}
+  constructor(
+    private readonly tenantRepository: TenantRepository,
+    private readonly moduleService: ModuleService
+  ) {}
 
   create(createTenantDto: { companyName: string; slug: string }) {
     return this.tenantRepository.create(createTenantDto);
@@ -23,10 +27,12 @@ export class TenantService {
     return `This action removes a #${id} tenant`;
   }
 
-  createTenant(
+  async createTenant(
     @Payload() createTenantDto: { companyName: string; slug: string }
   ) {
     console.log('Creating tenant with data:', createTenantDto);
-    return this.tenantRepository.create(createTenantDto);
+    const tenant = await this.tenantRepository.create(createTenantDto);
+    await this.moduleService.enableAllModulesForTenant(tenant.tenantId);
+    return tenant;
   }
 }
