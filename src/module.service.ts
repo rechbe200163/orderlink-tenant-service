@@ -1,12 +1,13 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleEnum } from '@prisma/client';
 import { CustomPrismaService } from 'nestjs-prisma';
+import { ExtendedPrismaClient } from 'prisma/prisma.extension';
 
 @Injectable()
 export class ModuleService implements OnModuleInit {
   constructor(
     @Inject('PrismaService')
-    private readonly prisma: CustomPrismaService
+    private readonly prisma: CustomPrismaService<ExtendedPrismaClient>
   ) {}
 
   async onModuleInit() {
@@ -24,8 +25,10 @@ export class ModuleService implements OnModuleInit {
     }
   }
 
-  async enableAllModulesForTenant(tenantId: string) {
-    const modules = await this.prisma.client.module.findMany();
+  async enableDefaultModulesForTenant(tenantId: string) {
+    const modules = await this.prisma.client.module.findMany({
+      where: { NOT: { name: ModuleEnum.CUSTOM_ROLES } },
+    });
     for (const mod of modules) {
       await this.prisma.client.enabledModule.upsert({
         where: {

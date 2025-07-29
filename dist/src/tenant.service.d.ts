@@ -1,7 +1,9 @@
 import { TenantRepository } from './tenant.repository';
+import { ModuleService } from './module.service';
 export declare class TenantService {
     private readonly tenantRepository;
-    constructor(tenantRepository: TenantRepository);
+    private readonly moduleService;
+    constructor(tenantRepository: TenantRepository, moduleService: ModuleService);
     create(createTenantDto: {
         companyName: string;
         slug: string;
@@ -12,7 +14,7 @@ export declare class TenantService {
         backendUrl: string | null;
         status: import("@prisma/client").$Enums.TenantStatus;
         trialStartedAt: Date;
-        trialEndsAt: Date | null;
+        trialEndsAt: Date;
         maxUsers: number;
         billingCustomerId: string | null;
         createdAt: Date;
@@ -31,7 +33,7 @@ export declare class TenantService {
         backendUrl: string | null;
         status: import("@prisma/client").$Enums.TenantStatus;
         trialStartedAt: Date;
-        trialEndsAt: Date | null;
+        trialEndsAt: Date;
         maxUsers: number;
         billingCustomerId: string | null;
         createdAt: Date;

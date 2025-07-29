@@ -8,11 +8,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TenantModule = void 0;
 const common_1 = require("@nestjs/common");
+const schedule_1 = require("@nestjs/schedule");
 const tenant_service_1 = require("./tenant.service");
 const tenant_controller_1 = require("./tenant.controller");
 const tenant_repository_1 = require("./tenant.repository");
 const nestjs_prisma_1 = require("nestjs-prisma");
 const prisma_extension_1 = require("../prisma/prisma.extension");
+const module_service_1 = require("./module.service");
+const trial_expiration_service_1 = require("./trial-expiration.service");
 let TenantModule = class TenantModule {
 };
 exports.TenantModule = TenantModule;
@@ -26,9 +29,15 @@ exports.TenantModule = TenantModule = __decorate([
                 },
                 isGlobal: true,
             }),
+            schedule_1.ScheduleModule.forRoot(),
         ],
         controllers: [tenant_controller_1.TenantController],
-        providers: [tenant_service_1.TenantService, tenant_repository_1.TenantRepository],
+        providers: [
+            tenant_service_1.TenantService,
+            tenant_repository_1.TenantRepository,
+            module_service_1.ModuleService,
+            trial_expiration_service_1.TrialExpirationService,
+        ],
     })
 ], TenantModule);
 //# sourceMappingURL=tenant.module.js.map

@@ -12,7 +12,7 @@ export declare class TenantController {
         backendUrl: string | null;
         status: import("@prisma/client").$Enums.TenantStatus;
         trialStartedAt: Date;
-        trialEndsAt: Date | null;
+        trialEndsAt: Date;
         maxUsers: number;
         billingCustomerId: string | null;
         createdAt: Date;

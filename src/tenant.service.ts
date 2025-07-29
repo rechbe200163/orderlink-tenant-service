@@ -32,7 +32,7 @@ export class TenantService {
   ) {
     console.log('Creating tenant with data:', createTenantDto);
     const tenant = await this.tenantRepository.create(createTenantDto);
-    await this.moduleService.enableAllModulesForTenant(tenant.tenantId);
+    await this.moduleService.enableDefaultModulesForTenant(tenant.tenantId);
     return tenant;
   }
 }

@@ -1,7 +1,9 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CustomPrismaService } from 'nestjs-prisma';
 import { ModuleService } from './module.service';
+import { ExtendedPrismaClient } from 'prisma/prisma.extension';
+import { TenantStatus } from '@prisma/client';
 
 @Injectable()
 export class TrialExpirationService {
@@ -9,15 +11,15 @@ export class TrialExpirationService {
 
   constructor(
     @Inject('PrismaService')
-    private readonly prisma: CustomPrismaService,
-    private readonly moduleService: ModuleService,
+    private prismaService: CustomPrismaService<ExtendedPrismaClient>,
+    private readonly moduleService: ModuleService
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handleCron() {
-    const expiredTenants = await this.prisma.client.tenant.findMany({
+    const expiredTenants = await this.prismaService.client.tenant.findMany({
       where: {
-        status: 'TRIAL',
+        status: TenantStatus.TRIAL,
         trialEndsAt: { lte: new Date() },
       },
     });
