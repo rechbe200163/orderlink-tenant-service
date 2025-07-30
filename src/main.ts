@@ -1,45 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { TenantModule } from './tenant.module';
+import { AppModule } from './app.module';
 
-// main.ts
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    TenantModule,
-    {
-      // transport: Transport.TCP,
-      // options: {
-      //   host: 'localhost',
-      //   port: 3005,
-      // },
-      transport: Transport.RMQ,
-      options: {
-        urls: ['amqp://guest:guest@localhost:5672'],
-        queue: 'tenant_queue',
-      },
-    }
-  ); // HTTP App
-  // app.setGlobalPrefix('api');
+  const app = await NestFactory.create(AppModule);
 
-  // // Optional: Swagger Setup
-  // const config = new DocumentBuilder()
-  //   .setTitle('OrderLink Tenant Service API')
-  //   .setVersion('1.0')
-  //   .build();
-  // const document = SwaggerModule.createDocument(app, config);
-  // SwaggerModule.setup('docs', app, document);
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: ['amqp://guest:guest@localhost:5672'],
+      queue: 'tenant_queue',
+    },
+  });
 
-  // // Microservice TCP Setup
-  // const microservice = app.connectMicroservice<MicroserviceOptions>({
-  //   transport: Transport.RMQ,
-  //   options: {
-  //     urls: ['amqp://guest:guest@localhost:5672'],
-  //     queue: 'tenant_queue',
-  //   },
-  // });
-
-  // await app.startAllMicroservices();
-  await app.listen();
+  await app.startAllMicroservices();
+  await app.listen(3000);
 }
 bootstrap();
