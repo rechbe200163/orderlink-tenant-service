@@ -4,6 +4,9 @@
 /build
 
 # Logs
+.env.local
+.env.development.local
+.env
 logs
 *.log
 npm-debug.log*
