@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import Stripe from 'stripe';
+import {
+  ModuleName,
+  UserTier,
+  calculateOrderLinkPricing,
+} from './billing.utils';
 
 @Injectable()
 export class BillingService {
@@ -10,6 +15,24 @@ export class BillingService {
       apiVersion: '2025-07-30.basil',
       typescript: true,
     });
+  }
+
+  async processWebhook(payload: Buffer | string, signature: string) {
+    const secret = process.env.STRIPE_WEBHOOK_SECRET || '';
+    const event = this.stripe.webhooks.constructEvent(payload, signature, secret);
+    await this.handleStripeEvent(event);
+  }
+
+  private async handleStripeEvent(event: Stripe.Event) {
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        console.log(`Stripe checkout completed for session ${session.id}`);
+        break;
+      }
+      default:
+        console.log(`Unhandled stripe event ${event.type}`);
+    }
   }
 
   async createCheckoutSession({
