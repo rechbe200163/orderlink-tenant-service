@@ -1,9 +1,9 @@
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CustomPrismaService } from 'nestjs-prisma';
-import { ModuleService } from './tenant/module.service';
 import { ExtendedPrismaClient } from 'prisma/prisma.extension';
 import { TenantStatus } from '@prisma/client';
+import { ModuleService } from './module.service';
 
 @Injectable()
 export class TrialExpirationService {
