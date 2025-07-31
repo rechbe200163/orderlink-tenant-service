@@ -1,7 +1,7 @@
 import { Body, Controller, Post, RawBodyRequest, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { BillingService } from './billing.service';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { CreateCheckoutSessionDto } from './dto/create-checkout-session.dto';
 
 @Controller('billing')
@@ -15,6 +15,7 @@ export class BillingController {
   })
   @Post('checkout')
   async startCheckout(@Body() body: CreateCheckoutSessionDto) {
+    console.log('Starting checkout session:', body);
     return this.billingService.createCheckoutSession(body);
   }
 

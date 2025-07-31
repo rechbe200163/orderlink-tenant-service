@@ -4,6 +4,9 @@ import {
   ModuleName,
   UserTier,
   calculateOrderLinkPricing,
+  modulePrices,
+  setupFee,
+  userPrices,
 } from './billing.utils';
 
 @Injectable()
@@ -44,42 +47,64 @@ export class BillingService {
     userTier,
     email,
   }: {
-    modules: ModuleName[];
-    userTier: UserTier;
+    modules?: ModuleName[];
+    userTier?: UserTier;
     email: string;
   }) {
-    const pricing = calculateOrderLinkPricing(modules, userTier); // aus vorheriger Logik
+    const pricing = calculateOrderLinkPricing(modules, userTier);
+
+    const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
+
+    // Setup Fee (einmalig)
+    line_items.push({
+      price_data: {
+        currency: 'eur',
+        unit_amount: setupFee * 100,
+        product_data: {
+          name: 'Einrichtungsgebühr',
+          description: 'Einmalige Setup-Kosten für OrderLink',
+        },
+      },
+      quantity: 1,
+    });
+
+    // Module (monatlich)
+    (modules ?? []).forEach((mod) => {
+      line_items.push({
+        price_data: {
+          currency: 'eur',
+          unit_amount: modulePrices[mod] * 100,
+          recurring: { interval: 'month' },
+          product_data: {
+            name: `Modul: ${mod}`,
+            description: `Monatliche Kosten für das Modul "${mod}"`,
+          },
+        },
+        quantity: 1,
+      });
+    });
+
+    // Nutzergruppe (monatlich)
+    if (userTier && userPrices[userTier] > 0) {
+      line_items.push({
+        price_data: {
+          currency: 'eur',
+          unit_amount: userPrices[userTier] * 100,
+          recurring: { interval: 'month' },
+          product_data: {
+            name: `Nutzergruppe: ${userTier}`,
+            description: `Bis zu ${userTier === 'TEAM' ? 5 : userTier === 'PRO' ? 7 : 'Nutzer'} Nutzer`,
+          },
+        },
+        quantity: 1,
+      });
+    }
 
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'subscription',
       customer_email: email,
-      line_items: [
-        {
-          price_data: {
-            currency: 'eur',
-            unit_amount: pricing.netMonthly * 100,
-            product_data: {
-              name: `OrderLink Abo (${modules.join(' + ')})`,
-              description: `Tenant mit ${userTier} Nutzer`,
-            },
-            recurring: {
-              interval: 'month',
-            },
-          },
-          quantity: 1,
-        },
-        {
-          price_data: {
-            currency: 'eur',
-            unit_amount: pricing.setupFee * 100,
-            product_data: {
-              name: 'Einrichtungsgebühr',
-            },
-          },
-          quantity: 1,
-        },
-      ],
+      line_items,
       success_url: 'https://yourapp.com/success',
       cancel_url: 'https://yourapp.com/cancel',
     });
