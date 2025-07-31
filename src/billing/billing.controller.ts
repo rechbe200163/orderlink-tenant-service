@@ -1,8 +1,8 @@
 import { Body, Controller, Post, RawBody, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { BillingService } from './billing.service';
-import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBody } from '@nestjs/swagger';
 import { CreateCheckoutSessionDto } from './dto/create-checkout-session.dto';
-import Stripe from 'stripe';
 
 @Controller('billing')
 export class BillingController {
@@ -19,18 +19,10 @@ export class BillingController {
   }
 
   @Post('webhooks/stripe')
-  @RawBody() // wichtig: kein JSON-Parsing für Webhook!
-  handleStripeWebhook(@Req() req: Request) {
-    const event = this.stripe.webhooks.constructEvent(
-      req.body,
-      req.headers['stripe-signature'],
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
-
-    switch (event.type) {
-      case 'checkout.session.completed':
-        // Subscription erfolgreich → Tenant aktivieren
-        break;
-    }
+  @RawBody()
+  async handleStripeWebhook(@Req() req: Request, @RawBody() rawBody: Buffer) {
+    const signature = req.headers['stripe-signature'] as string;
+    await this.billingService.processWebhook(rawBody, signature);
+    return { received: true };
   }
 }

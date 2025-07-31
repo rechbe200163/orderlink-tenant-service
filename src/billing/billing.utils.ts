@@ -1,5 +1,5 @@
-type ModuleName = 'INSIGHT' | 'FLOW' | 'ACCESS';
-type UserTier = 'CORE' | 'TEAM' | 'PRO' | 'ENTERPRISE';
+export type ModuleName = 'INSIGHT' | 'FLOW' | 'ACCESS';
+export type UserTier = 'CORE' | 'TEAM' | 'PRO' | 'ENTERPRISE';
 
 const modulePrices: Record<ModuleName, number> = {
   // pro Module
@@ -17,7 +17,7 @@ const userPrices: Record<UserTier, number> = {
 
 const setupFee = 49;
 
-function calculateOrderLinkPricing(
+export function calculateOrderLinkPricing(
   modules: ModuleName[],
   userTier: UserTier
 ): {
