@@ -1,9 +1,11 @@
 import { NestFactory, Reflector } from '@nestjs/core';
+import express from 'express';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use('/billing/webhooks/stripe', express.raw({ type: 'application/json' }));
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
