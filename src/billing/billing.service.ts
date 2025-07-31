@@ -19,7 +19,11 @@ export class BillingService {
 
   async processWebhook(payload: Buffer, signature: string) {
     const secret = process.env.STRIPE_WEBHOOK_SECRET || '';
-    const event = this.stripe.webhooks.constructEvent(payload, signature, secret);
+    const event = this.stripe.webhooks.constructEvent(
+      payload,
+      signature,
+      secret
+    );
     await this.handleStripeEvent(event);
   }
 

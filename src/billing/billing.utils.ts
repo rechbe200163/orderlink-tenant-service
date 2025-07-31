@@ -1,5 +1,14 @@
-export type ModuleName = 'INSIGHT' | 'FLOW' | 'ACCESS';
-export type UserTier = 'CORE' | 'TEAM' | 'PRO' | 'ENTERPRISE';
+export enum ModuleName {
+  INSIGHT = 'INSIGHT', // Statistiken
+  FLOW = 'FLOW', // Navigation
+  ACCESS = 'ACCESS', // Custom Roles
+}
+export enum UserTier {
+  CORE = 'CORE',
+  TEAM = 'TEAM',
+  PRO = 'PRO',
+  ENTERPRISE = 'ENTERPRISE',
+}
 
 const modulePrices: Record<ModuleName, number> = {
   // pro Module

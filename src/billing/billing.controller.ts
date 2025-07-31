@@ -1,4 +1,4 @@
-import { Body, Controller, Post, RawBody, Req } from '@nestjs/common';
+import { Body, Controller, Post, RawBodyRequest, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { BillingService } from './billing.service';
 import { ApiBody } from '@nestjs/swagger';
@@ -18,10 +18,10 @@ export class BillingController {
     return this.billingService.createCheckoutSession(body);
   }
 
-  @Post('webhooks/stripe')
-  @RawBody()
-  async handleStripeWebhook(@Req() req: Request, @RawBody() rawBody: Buffer) {
+  @Post('webhook')
+  async handleStripeWebhook(@Req() req: RawBodyRequest<Request>) {
     const signature = req.headers['stripe-signature'] as string;
+    const rawBody = (req as any).rawBody as Buffer;
     await this.billingService.processWebhook(rawBody, signature);
     return { received: true };
   }
