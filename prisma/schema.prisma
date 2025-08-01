@@ -32,7 +32,7 @@ model Tenant {
   trialStartedAt DateTime     @default(now()) @db.Timestamptz
   trialEndsAt DateTime @default(dbgenerated("(now() + interval '3 days')")) @db.Timestamptz
 
-  maxUsers Int @default(3)
+  maxEmployees Int @default(3)
 
   enabledModules    EnabledModule[]
   billingCustomerId String?         

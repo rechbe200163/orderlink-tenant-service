@@ -41,7 +41,7 @@ export class TenantDto {
   @Expose()
   @IsNumber()
   @IsPositive()
-  maxUsers: number;
+  maxEmployees: number;
 
   @Expose()
   @IsString()

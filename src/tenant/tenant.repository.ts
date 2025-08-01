@@ -40,7 +40,7 @@ export class TenantRepository {
         status: true,
         trialStartedAt: true,
         trialEndsAt: true,
-        maxUsers: true,
+        maxEmployees: true,
         createdAt: true,
         updatedAt: true,
         enabledModules: {
